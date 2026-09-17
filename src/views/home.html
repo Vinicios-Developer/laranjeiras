@@ -12,7 +12,8 @@
 <body>
     <header class="topbar"><a class="brand" href="/"><span
                 class="brand-mark">CL</span><span><strong>COPA</strong><small>LARANJEIRAS</small></span></a>
-        <nav class="nav-links"><a href="#sobre">A Copa</a><a href="#premiacao">Premiação</a><a
+        <button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="home-navigation">Menu <span>☰</span></button>
+        <nav class="nav-links" id="home-navigation"><a href="#sobre">A Copa</a><a href="#premiacao">Premiação</a><a
                 href="/inscricao">Inscrever time</a><a href="/acesso-time">Acessar meu time</a></nav>
         <div class="topbar-church"><img src="/assets/logo-iap.png" alt="IAP"><span>IAP<br><b>Laranjeiras</b></span>
         </div>
@@ -79,6 +80,18 @@
         <p>Um evento da nossa igreja para toda a comunidade.</p>
         <div class="footer-church"><img src="/assets/logo-iap.png" alt="IAP"><span>IAP LARANJEIRAS</span></div>
     </footer>
+    <script>
+        const menuButton = document.querySelector(".mobile-nav-toggle");
+        const navigation = document.querySelector("#home-navigation");
+        menuButton?.addEventListener("click", () => {
+            const isOpen = navigation.classList.toggle("is-open");
+            menuButton.setAttribute("aria-expanded", String(isOpen));
+        });
+        navigation?.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+            navigation.classList.remove("is-open");
+            menuButton?.setAttribute("aria-expanded", "false");
+        }));
+    </script>
 </body>
 
 </html>

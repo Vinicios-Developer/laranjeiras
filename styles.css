@@ -188,3 +188,46 @@ footer{padding-left:9vw;padding-right:9vw}
   .team-dashboard .back-home{margin-top:30px}
   .team-dashboard .players-fieldset{margin-bottom:16px}
 }
+
+.mobile-nav-toggle{display:none}
+@media(max-width:800px){
+  .topbar{position:relative;z-index:30}
+  .mobile-nav-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-left:auto;
+    margin-right:14px;
+    padding:10px 13px;
+    border:1px solid rgba(23,33,29,.2);
+    border-radius:999px;
+    background:transparent;
+    color:var(--ink);
+    font-size:12px;
+    font-weight:800;
+  }
+  .mobile-nav-toggle span{font-size:17px;line-height:1}
+  .nav-links{
+    display:none;
+    position:absolute;
+    top:calc(100% + 8px);
+    left:6vw;
+    right:6vw;
+    flex-direction:column;
+    gap:0;
+    padding:8px;
+    background:#fffdf7;
+    border:1px solid rgba(23,33,29,.1);
+    border-radius:14px;
+    box-shadow:0 14px 30px rgba(24,35,31,.16);
+  }
+  .nav-links.is-open{display:flex}
+  .nav-links a{
+    display:block;
+    padding:15px 14px;
+    border-radius:9px;
+    font-size:14px;
+  }
+  .nav-links a:hover,.nav-links a:focus-visible{background:#f0f2e9}
+  .nav-links a:nth-child(3)::after{display:none}
+}
