@@ -17,6 +17,15 @@ Acesse `http://localhost:3000`. O painel da organização fica em `http://localh
 
 Se você já tem dados no antigo `data/database.json`, rode `npm run migrate` depois de aplicar o schema para importar usuários e times existentes para o Postgres.
 
+## Deploy (Railway)
+
+O app é um servidor Node comum (`http.createServer`, escutando `process.env.PORT`), então roda direto no Railway sem adaptação:
+
+1. Crie um projeto novo no Railway e conecte este repositório do GitHub.
+2. Configure a variável de ambiente `DATABASE_URL` no painel do Railway (mesma connection string do `.env` local).
+3. O Railway detecta o `package.json` e roda `npm install` + `npm start` automaticamente. `PORT` é injetado por ele.
+4. Rode `psql "$DATABASE_URL" -f db/schema.sql` uma vez (local, apontando pro banco de produção) para criar as tabelas, se ainda não existirem.
+
 ## O que já está nesta versão
 
 - MVC separado em `src/models`, `src/views`, `src/controllers`, `src/services` e `src/middleware`.
