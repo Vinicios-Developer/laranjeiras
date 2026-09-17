@@ -1,0 +1,86 @@
+.admin-top,.admin-main{font-family:"Montserrat",sans-serif}
+.admin-main{font-size:16px}
+.admin-main h1,.admin-main h2,.admin-main .stats strong{font-family:"Montserrat",sans-serif}
+.admin-main h1{font-weight:800;letter-spacing:-2px}
+.admin-main h2{font-weight:800;letter-spacing:-1px}
+.admin-main .stats strong{font-weight:800}
+.admin-main .eyebrow{font-size:14px}
+.admin-main .muted{font-size:16px}
+.admin-main .stats span{font-size:14px}
+.admin-main .stats strong{font-size:38px}
+.admin-main .stats strong small{font-size:16px}
+.admin-main .table-toolbar h2{font-size:30px}
+.admin-main .table-toolbar span{font-size:14px}
+.admin-main th{font-size:12px}
+.admin-main td{font-size:15px}
+.admin-main td small,.admin-main .team-link small{font-size:12px}
+.admin-main .status{font-size:12px}
+.admin-main .stats{grid-template-columns:repeat(5,1fr)}
+.admin-main .stats>div small{font-size:12px;color:var(--muted)}
+.limit-card{margin-bottom:18px}
+.limit-form{display:flex;align-items:end;gap:14px;flex-wrap:wrap}
+.limit-form label{margin:0;min-width:260px}
+.limit-form input{margin-top:7px}
+.admin-heading-actions{display:flex;align-items:center;gap:10px}
+.admin-heading-actions .button,
+.admin-main>.back-home{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:11px 17px;
+  border-radius:999px;
+  font-family:"Montserrat",sans-serif;
+  font-size:13px;
+  font-weight:800;
+  text-decoration:none;
+  transition:transform .2s, box-shadow .2s, background .2s, border-color .2s;
+}
+.admin-heading-actions .button:hover,
+.admin-main>.back-home:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(24,35,31,.12)}
+.admin-heading-actions .button-outline{
+  border:1px solid #d2dacb;
+  background:#fff;
+  color:var(--ink);
+}
+.admin-heading-actions .button-outline:hover{border-color:var(--orange);color:var(--orange-dark)}
+.admin-heading-actions .button-primary{background:var(--orange);color:#fff}
+.admin-chart{margin:18px 0}
+.chart-row{display:grid;grid-template-columns:120px 1fr 30px;align-items:center;gap:14px;margin:14px 0;font-size:14px}
+.chart-row>div{height:12px;background:#edf0e8;border-radius:99px;overflow:hidden}
+.chart-row i{display:block;height:100%;background:var(--orange);border-radius:99px}
+.chart-row i.pending-bar{background:#e7a62e}
+.chart-row i.paid-bar{background:#8aa52a}
+.chart-row b{font-size:14px}
+.table-actions{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.table-actions form{margin:0}
+.team-link{display:block;color:var(--ink);text-decoration:none}
+.team-link b{display:block;font-size:16px}
+.team-link small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.team-link span{display:block;color:var(--orange-dark);font-size:12px;font-weight:800;margin-top:7px;opacity:0;transform:translateY(3px);transition:.2s}
+.team-link:hover b{color:var(--orange-dark)}
+.team-link:hover span{opacity:1;transform:translateY(0)}
+.action-btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 13px;border:1px solid #dce2d5;border-radius:999px;background:#fff;color:var(--ink);font-size:12px;font-weight:800;text-decoration:none;transition:.2s}
+.action-btn:hover{transform:translateY(-1px);box-shadow:0 5px 12px rgba(24,35,31,.1)}
+.action-view{border-color:#cbd99a;background:#f5f8e8;color:#58701b}
+.action-approve{border-color:#efc1ad;background:#fff4ee;color:var(--orange-dark)}
+.action-reopen{background:#f2f3ef;color:var(--muted)}
+.result-card{margin-bottom:18px}
+.result-form{display:flex;align-items:end;gap:18px;flex-wrap:wrap}
+.result-form label{margin:0}
+.result-form label:first-child{display:flex;align-items:center;gap:8px;padding-bottom:13px}
+.result-form label:first-child input{width:auto;margin:0}
+.result-form select{min-width:170px}
+.result-form .button{margin:0}
+.admin-main>.back-home{margin-bottom:20px;border:1px solid #d2dacb;background:#fff;color:var(--ink)}
+.admin-main>.back-home:hover{border-color:var(--orange);color:var(--orange-dark)}
+@media(max-width:700px){
+  .admin-heading-actions{align-items:stretch;flex-direction:column}
+  .chart-row{grid-template-columns:100px 1fr 24px}
+  .table-actions{align-items:flex-start;flex-direction:column}
+  .team-link span{opacity:1;transform:none}
+  .result-form{align-items:stretch;flex-direction:column;gap:8px}
+}
+@media(max-width:1000px) and (min-width:701px){
+  .admin-main .stats{grid-template-columns:repeat(3,1fr)}
+}

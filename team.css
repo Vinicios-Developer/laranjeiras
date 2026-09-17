@@ -1,0 +1,104 @@
+.team-dashboard{min-height:100vh;background:#eef0e5;color:var(--ink);font-size:16px}
+.team-topbar{height:82px;background:#14201c;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 7vw}
+.team-topbar .brand{color:#fff}
+.team-top-context{display:flex;align-items:center;gap:24px}
+.team-top-context span{color:var(--lime);font-size:11px;font-weight:800;letter-spacing:2px}
+.team-top-context a{color:#fff;text-decoration:none;font-size:12px}
+.team-main{max-width:1240px;margin:auto;padding:56px 7vw 80px}
+.team-hero{display:flex;justify-content:space-between;align-items:end;gap:20px}
+.team-hero h1{font-size:clamp(38px,5vw,66px);letter-spacing:-2px;margin:10px 0}
+.team-hero>div>p:last-child{color:var(--muted);font-size:14px;margin:0}
+.team-status{background:#fff8e9;border:1px solid #efd79f;color:#9b6810;border-radius:30px;padding:11px 15px;font-size:12px;font-weight:700;white-space:nowrap}
+.team-status i,.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e7a62e;margin-right:7px}
+.team-status.approved{background:#eef7df;border-color:#c9da55;color:#4c6b12}
+.team-status.approved i{background:#8aa52a}
+.team-main>.panel-notice{margin:18px 0}
+.team-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
+.team-overview article{background:#fff;border-radius:12px;padding:22px;border:1px solid #e0e4d9}
+.overview-label{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+.team-overview strong{display:block;font-size:27px;margin:12px 0 4px;letter-spacing:-1px}
+.team-overview small{font-size:12px;color:var(--muted)}
+.team-columns{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.8fr);gap:18px}
+.team-column-main,.team-column-side{display:grid;gap:18px;align-content:start}
+.team-card{background:#fff;border:1px solid #e0e4d9;border-radius:14px;padding:28px;box-shadow:0 8px 24px rgba(24,35,31,.04)}
+.card-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px}
+.card-heading h2{font-size:26px;letter-spacing:-1px;margin:7px 0 0}
+.card-counter,.payment-coming{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:1px}
+.team-card .team-panel-copy{margin:22px 0}
+.team-card .team-panel-copy strong{font-size:15px}
+.team-card .team-panel-copy p{font-size:13px;line-height:1.6}
+.payment-card{background:#14201c;color:#fff}
+.payment-card .eyebrow{color:var(--lime)}
+.payment-coming{color:var(--lime)}
+.payment-summary{display:flex;align-items:center;gap:12px;padding:18px 0;border-top:1px solid rgba(255,255,255,.15);border-bottom:1px solid rgba(255,255,255,.15);margin:22px 0 15px}
+.payment-symbol{display:grid;place-items:center;width:42px;height:42px;background:var(--orange);border-radius:50%;font-weight:800;font-size:11px}
+.payment-summary strong{font-size:14px}
+.payment-summary p{font-size:12px;color:#b9c2ba;margin:6px 0 0}
+.payment-pending{margin-left:auto;color:#f6c65c;font-size:11px;font-weight:700}
+.payment-card .button-outline{color:#fff;border-color:rgba(255,255,255,.3)}
+.payment-card .button-outline:disabled{opacity:.7;cursor:not-allowed;transform:none}
+.payment-note{display:block;color:#aeb8ae;font-size:12px;line-height:1.55;margin-top:12px}
+.payment-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.payment-method{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:18px 16px;display:flex;flex-direction:column;gap:6px;transition:transform .2s,border-color .2s,background .2s}
+.payment-method:hover{transform:translateY(-3px);border-color:var(--lime);background:rgba(255,255,255,.1)}
+.payment-method-icon{font-size:22px}
+.payment-method h3{font-size:14px;margin:2px 0 0;color:#fff}
+.payment-method strong{font-size:18px;letter-spacing:-.5px}
+.payment-method small{color:#b9c2ba;font-size:11px;line-height:1.5;margin-bottom:8px}
+.payment-method .button{margin-top:auto;font-size:12px;padding:12px 14px}
+.whatsapp-btn{margin-top:6px;background:#25d366;color:#0b2b18;border:0}
+.whatsapp-btn:hover{background:#1ebd5a}
+.payment-paid{display:flex;align-items:center;gap:16px;background:rgba(201,218,85,.14);border:1px solid rgba(201,218,85,.4);border-radius:12px;padding:20px;margin:22px 0}
+.payment-paid-icon{font-size:26px}
+.payment-paid strong{display:block;color:#fff;font-size:15px}
+.payment-paid p{font-size:12px;color:#b9c2ba;margin:5px 0 0;line-height:1.55}
+.bracket-card{min-height:330px}
+.bracket-empty{padding:27px 5px;text-align:center;color:var(--muted)}
+.bracket-icon{display:block;color:var(--orange);font-size:28px;margin-bottom:12px}
+.bracket-empty strong{display:block;color:var(--ink);font-size:13px}
+.bracket-empty p{font-size:12px;line-height:1.55}
+.link-card{background:var(--lime);border:0}
+.link-icon{display:block;font-size:24px;margin-bottom:20px}
+.link-card strong{font-size:15px}
+.link-card p{font-size:12px;line-height:1.6;max-width:260px}
+.link-card a{color:var(--ink);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.team-dashboard .back-home{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin-top:30px;
+  padding:12px 17px;
+  border:1px solid #d8ded1;
+  border-radius:999px;
+  background:#fff;
+  color:var(--ink);
+  box-shadow:0 6px 16px rgba(24,35,31,.06);
+  font-size:11px;
+  font-weight:800;
+  text-decoration:none;
+  transition:transform .2s, border-color .2s, box-shadow .2s, color .2s;
+}
+.team-dashboard .back-home::first-letter{color:var(--orange)}
+.team-dashboard .back-home:hover{
+  transform:translateY(-2px);
+  border-color:var(--orange);
+  color:var(--orange-dark);
+  box-shadow:0 10px 22px rgba(24,35,31,.1);
+}
+.team-dashboard .players-fieldset{margin-bottom:16px}
+@media(max-width:800px){
+  .team-topbar{padding:0 6vw}
+  .team-top-context span{display:none}
+  .team-main{padding:35px 6vw 55px}
+  .team-hero{display:block}
+  .team-status{display:inline-block;margin-top:18px}
+  .team-overview{grid-template-columns:1fr 1fr}
+  .team-overview article:last-child{grid-column:span 2}
+  .team-columns{grid-template-columns:1fr}
+  .team-card{padding:21px}
+  .team-panel-copy{margin:18px 0}
+  .payment-summary{align-items:flex-start;flex-wrap:wrap}
+  .payment-pending{margin-left:54px}
+  .payment-methods{grid-template-columns:1fr}
+  .team-top-context a{font-size:11px}
+}
