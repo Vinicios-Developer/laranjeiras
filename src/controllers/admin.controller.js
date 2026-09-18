@@ -27,10 +27,19 @@ const AdminController = {
     const position = Number(team.position) || 0;
     const positionOptions = ["Não definida", "1º lugar", "2º lugar", "3º lugar", "4º lugar"].map((label, index) => `<option value="${index || ""}" ${position === index ? "selected" : ""}>${label}</option>`).join("");
     const paymentStatus = ["pending", "partial", "paid"].includes(team.paymentStatus) ? team.paymentStatus : "pending";
-    send(response, 200, render("team-detail", { teamName: escapeHtml(team.name), teamId: team.id, responsible: escapeHtml(team.responsible), email: escapeHtml(team.email), phone: escapeHtml(team.phone), status: team.status === "approved" ? "Confirmado" : "Pendente", players: team.players.map((player, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(player.name)}</td><td>${escapeHtml(player.phone)}</td></tr>`).join("") || '<tr><td colspan="3">Nenhum jogador cadastrado.</td></tr>', championChecked: team.champion ? "checked" : "", positionOptions, paymentOptions: ["pending", "partial", "paid"].map(value => `<option value="${value}" ${paymentStatus === value ? "selected" : ""}>${{ pending: "Não pago", partial: "50% pago (R$ 125)", paid: "100% pago (R$ 250)" }[value]}</option>`).join("") }));
+    send(response, 200, render("team-detail", { teamName: escapeHtml(team.name), teamId: team.id, responsible: escapeHtml(team.responsible), email: escapeHtml(team.email), phone: escapeHtml(team.phone), status: team.status === "approved" ? "Confirmado" : "Pendente", players: team.players.map((player, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(player.name)}</td><td>${escapeHtml(player.phone)}</td><td><input type="checkbox" name="goalkeeper[${player.id}]" value="1" ${player.isGoalkeeper ? "checked" : ""}></td></tr>`).join("") || '<tr><td colspan="4">Nenhum jogador cadastrado.</td></tr>', championChecked: team.champion ? "checked" : "", positionOptions, paymentOptions: ["pending", "partial", "paid"].map(value => `<option value="${value}" ${paymentStatus === value ? "selected" : ""}>${{ pending: "Não pago", partial: "50% pago (R$ 125)", paid: "100% pago (R$ 250)" }[value]}</option>`).join("") }));
   },
   async updateResult(request, response, id) { const body = await parseBody(request); await TeamModel.updateResult(id, body); redirect(response, `/admin/times/${id}`); },
   async updatePayment(request, response, id) { const body = await parseBody(request); await TeamModel.updatePaymentStatus(id, body.paymentStatus); redirect(response, `/admin/times/${id}`); },
+  async updateGoalkeepers(request, response, id) {
+    const body = await parseBody(request);
+    const ids = Object.keys(body)
+      .map(key => key.match(/^goalkeeper\[(.+)\]$/))
+      .filter(match => match && body[match[0]] === "1")
+      .map(match => match[1]);
+    await TeamModel.setGoalkeepers(id, ids);
+    redirect(response, `/admin/times/${id}`);
+  },
   async updateAuthorizedLimit(request, response) { const body = await parseBody(request); await SettingsModel.updateAuthorizedTeamLimit(body.authorizedTeamLimit); redirect(response, "/admin"); },
   async exportTeams(_, response) {
     const rows = ["Time;Responsável;E-mail;WhatsApp;Status;Pagamento;Campeão;Posição;Jogador;Telefone"];

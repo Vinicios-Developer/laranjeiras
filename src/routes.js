@@ -53,6 +53,8 @@ const router = {
     if (request.method === "GET" && adminTeam) { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return AdminController.team(request, response, await TeamModel.findById(adminTeam[1])); return; }
     const adminPayment = route.match(/^\/admin\/times\/([^/]+)\/pagamento$/);
     if (request.method === "POST" && adminPayment) { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return AdminController.updatePayment(request, response, adminPayment[1]); return; }
+    const adminGoalkeeper = route.match(/^\/admin\/times\/([^/]+)\/goleiro$/);
+    if (request.method === "POST" && adminGoalkeeper) { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return AdminController.updateGoalkeepers(request, response, adminGoalkeeper[1]); return; }
     if (request.method === "POST" && adminTeam) { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return AdminController.updateResult(request, response, adminTeam[1]); return; }
     if (request.method === "GET" && route === "/admin/exportar-times") { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return AdminController.exportTeams(request, response); return; }
     if (request.method === "GET" && route === "/admin/chaveamento") { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return AdminController.bracket(request, response); return; }

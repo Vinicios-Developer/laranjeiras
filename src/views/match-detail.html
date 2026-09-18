@@ -1,1 +1,37 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Partida | Copa Laranjeiras</title><link rel="stylesheet" href="/styles-v2.css"><link rel="stylesheet" href="/admin.css"></head><body><header class="admin-top"><a class="brand" href="/"><span class="brand-mark">CL</span><span><strong>COPA</strong><small>LARANJEIRAS</small></span></a><nav><a href="/admin">Times</a><a href="/admin/chaveamento">Chaveamento</a><a href="/logout">Sair</a></nav></header><main class="admin-main"><a class="back-home" href="/admin/chaveamento">← Voltar ao chaveamento</a><div class="admin-heading"><div><p class="eyebrow">{{round}}</p><h1>{{homeTeamName}} × {{awayTeamName}}</h1><p class="muted">Registre o placar e as estatísticas de quem jogou.</p></div></div><form method="post" action="/admin/partidas/{{matchId}}"><section class="table-card result-card"><div class="table-toolbar"><div><h2>Placar</h2><span>Marque como encerrada quando o jogo terminar.</span></div></div><div class="result-form"><label>{{homeTeamName}}<input type="number" min="0" name="homeScore" value="{{homeScore}}"></label><label>{{awayTeamName}}<input type="number" min="0" name="awayScore" value="{{awayScore}}"></label><label><input type="checkbox" name="finished" value="1" {{finishedChecked}}> Partida encerrada</label></div></section><section class="table-card"><div class="table-toolbar"><div><h2>Estatísticas dos jogadores</h2><span>Marque "Em campo" pra quem participou e preencha os números.</span></div></div><div class="table-wrap stats-form">{{statsTable}}</div><button class="button button-primary" style="margin-top:18px">Salvar partida</button></section></form></main></body></html>
+<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Partida | Copa Laranjeiras</title><link rel="stylesheet" href="/styles-v2.css"><link rel="stylesheet" href="/admin.css"></head><body><header class="admin-top"><a class="brand" href="/"><span class="brand-mark">CL</span><span><strong>COPA</strong><small>LARANJEIRAS</small></span></a><nav><a href="/admin">Times</a><a href="/admin/chaveamento">Chaveamento</a><a href="/logout">Sair</a></nav></header><main class="admin-main"><a class="back-home" href="/admin/chaveamento">← Voltar ao chaveamento</a><div class="admin-heading"><div><p class="eyebrow">{{round}}</p><h1>{{homeTeamName}} × {{awayTeamName}}</h1><p class="muted">Registre o placar e as estatísticas de quem jogou.</p></div></div><form method="post" action="/admin/partidas/{{matchId}}"><section class="table-card result-card"><div class="table-toolbar"><div><h2>Placar</h2><span>Marque como encerrada quando o jogo terminar.</span></div></div><div class="result-form"><label>{{homeTeamName}}<input type="number" min="0" name="homeScore" value="{{homeScore}}"></label><label>{{awayTeamName}}<input type="number" min="0" name="awayScore" value="{{awayScore}}"></label><label><input type="checkbox" name="finished" value="1" {{finishedChecked}}> Partida encerrada</label></div></section><section class="table-card"><div class="table-toolbar"><div><h2>Estatísticas dos jogadores</h2><span>Clique no jogador pra lançar a estatística dele.</span></div></div><div class="match-players">{{matchPlayers}}</div><button class="button button-primary" style="margin-top:18px">Salvar partida</button></section></form></main><script>
+document.querySelectorAll(".player-card-btn").forEach(function (button) {
+  button.addEventListener("click", function () {
+    var dialog = document.getElementById(button.dataset.dialog);
+    if (dialog) dialog.showModal();
+  });
+});
+document.querySelectorAll("dialog.stat-modal").forEach(function (dialog) {
+  dialog.querySelectorAll("[data-close]").forEach(function (button) {
+    button.addEventListener("click", function () { dialog.close(); });
+  });
+  dialog.addEventListener("click", function (event) {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener("close", function () { refreshBadge(dialog); });
+});
+function refreshBadge(dialog) {
+  var badge = document.getElementById(dialog.dataset.badge);
+  if (!badge) return;
+  var played = dialog.querySelector("[name^='played']").checked;
+  if (!played) { badge.textContent = "Não lançado"; return; }
+  var isGoalkeeper = dialog.querySelector("[name^='goalkeeper']").checked;
+  var mvp = dialog.querySelector("[name^='mvp']").checked;
+  var goals = Number(dialog.querySelector("[name^='goals[']").value) || 0;
+  var assists = Number(dialog.querySelector("[name^='assists[']").value) || 0;
+  var yellow = Number(dialog.querySelector("[name^='yellowCards[']").value) || 0;
+  var red = Number(dialog.querySelector("[name^='redCards[']").value) || 0;
+  var parts = [];
+  if (isGoalkeeper) parts.push("🧤");
+  if (goals) parts.push("⚽" + goals);
+  if (assists) parts.push("🎯" + assists);
+  if (yellow) parts.push("🟨" + yellow);
+  if (red) parts.push("🟥" + red);
+  if (mvp) parts.push("⭐");
+  badge.textContent = parts.length ? parts.join(" ") : "Em campo";
+}
+</script></body></html>

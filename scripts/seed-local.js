@@ -60,10 +60,11 @@ async function main() {
     );
 
     const playerCount = 7 + Math.floor(Math.random() * 4); // 7 a 10 jogadores
+    const goalkeeperSlot = 1 + Math.floor(Math.random() * playerCount);
     for (let slot = 1; slot <= playerCount; slot += 1) {
       await pool.query(
-        "insert into players (team_id, sort_order, name, phone) values ($1, $2, $3, $4)",
-        [teamId, slot, randomPlayerName(), randomPhone()]
+        "insert into players (team_id, sort_order, name, phone, is_goalkeeper) values ($1, $2, $3, $4, $5)",
+        [teamId, slot, randomPlayerName(), randomPhone(), slot === goalkeeperSlot]
       );
     }
   }

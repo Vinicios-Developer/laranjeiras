@@ -74,13 +74,29 @@
 .result-form .button{margin:0}
 .admin-main>.back-home{margin-bottom:20px;border:1px solid #d2dacb;background:#fff;color:var(--ink)}
 .admin-main>.back-home:hover{border-color:var(--orange);color:var(--orange-dark)}
-.stats-form table th,.stats-form table td{padding:6px 8px;font-size:11px;white-space:nowrap}
-.stats-form table td:first-child{white-space:normal;min-width:140px}
-.stats-form table td small{display:block;color:var(--muted);font-size:10px}
-.stats-form table input[type="number"]{width:52px;padding:6px;margin:0;text-align:center}
-.stats-form table input[type="checkbox"]{width:auto;margin:0}
-.stats-form table{min-width:1400px}
+.match-players{display:grid;gap:24px;margin:18px 0}
+.match-team-section h3{font-size:15px;font-weight:800;margin:0 0 12px}
+.match-team-section h3 span{font-weight:600;color:var(--muted)}
+.player-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.player-card-btn{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;background:#fff;border:1px solid #dce2d5;border-radius:10px;padding:14px;font-family:inherit;transition:transform .15s,border-color .15s,box-shadow .15s}
+.player-card-btn:hover{transform:translateY(-2px);border-color:var(--orange);box-shadow:0 8px 16px rgba(24,35,31,.08)}
+.player-card-name{font-size:13px;font-weight:700;color:var(--ink)}
+.player-card-name small{display:block;color:var(--muted);font-size:10px;font-weight:600;margin-top:2px}
+.player-card-badges{font-size:12px;color:var(--muted);font-weight:600}
+dialog.stat-modal{border:0;border-radius:14px;padding:24px;width:min(560px,92vw);max-height:85vh;overflow:auto;box-shadow:0 24px 60px rgba(24,35,31,.25)}
+dialog.stat-modal::backdrop{background:rgba(14,23,19,.6)}
+.stat-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.stat-modal-head h3{margin:0;font-size:18px}
+.stat-modal-close{background:transparent;font-size:20px;color:var(--muted);line-height:1;padding:4px}
+.stat-modal-toggles{display:flex;flex-wrap:wrap;gap:16px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.stat-modal-toggles label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin:0}
+.stat-modal-toggles input{width:auto;margin:0}
+.stat-modal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.stat-modal-grid label{font-size:11px;font-weight:700;color:var(--muted);margin:0}
+.stat-modal-grid input{margin-top:6px}
 @media(max-width:700px){
+  .stat-modal-grid{grid-template-columns:1fr 1fr}
+  .player-cards{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
   .admin-heading-actions{align-items:stretch;flex-direction:column}
   .chart-row{grid-template-columns:100px 1fr 24px}
   .table-actions{align-items:flex-start;flex-direction:column}

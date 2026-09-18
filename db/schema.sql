@@ -31,9 +31,11 @@ create table if not exists players (
   sort_order int not null,
   name text,
   phone text,
-  active boolean not null default true
+  active boolean not null default true,
+  is_goalkeeper boolean not null default false
 );
 alter table players add column if not exists active boolean not null default true;
+alter table players add column if not exists is_goalkeeper boolean not null default false;
 create index if not exists players_team_id_idx on players(team_id);
 
 create table if not exists matches (

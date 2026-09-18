@@ -21,8 +21,8 @@ function toTeam(row) {
 }
 async function attachPlayers(team) {
   if (!team) return team;
-  const { rows } = await query("select id, name, phone from players where team_id = $1 and active = true order by sort_order", [team.id]);
-  team.players = rows;
+  const { rows } = await query("select id, name, phone, is_goalkeeper from players where team_id = $1 and active = true order by sort_order", [team.id]);
+  team.players = rows.map(row => ({ id: row.id, name: row.name, phone: row.phone, isGoalkeeper: row.is_goalkeeper }));
   return team;
 }
 async function replacePlayers(teamId, players) {
@@ -43,7 +43,7 @@ async function upsertPlayers(teamId, entries) {
       await query("update players set active = false where id = $1 and team_id = $2", [entry.id, teamId]);
       if (!isEmpty) {
         order += 1;
-        await query("insert into players (team_id, sort_order, name, phone) values ($1, $2, $3, $4)", [teamId, order, name, phone]);
+        await query("insert into players (team_id, sort_order, name, phone, is_goalkeeper) values ($1, $2, $3, $4, $5)", [teamId, order, name, phone, Boolean(entry.isGoalkeeper)]);
       }
       continue;
     }
@@ -53,12 +53,12 @@ async function upsertPlayers(teamId, entries) {
     }
     if (entry.id) {
       order += 1;
-      await query("update players set name = $1, phone = $2, sort_order = $3 where id = $4 and team_id = $5", [name, phone, order, entry.id, teamId]);
+      await query("update players set name = $1, phone = $2, sort_order = $3, is_goalkeeper = $4 where id = $5 and team_id = $6", [name, phone, order, Boolean(entry.isGoalkeeper), entry.id, teamId]);
       continue;
     }
     if (!isEmpty) {
       order += 1;
-      await query("insert into players (team_id, sort_order, name, phone) values ($1, $2, $3, $4)", [teamId, order, name, phone]);
+      await query("insert into players (team_id, sort_order, name, phone, is_goalkeeper) values ($1, $2, $3, $4, $5)", [teamId, order, name, phone, Boolean(entry.isGoalkeeper)]);
     }
   }
 }
@@ -115,6 +115,10 @@ const TeamModel = {
   async updateStatus(id, status) {
     const { rows } = await query("update teams set status = $2 where id = $1 returning *", [id, status]);
     return attachPlayers(toTeam(rows[0]));
+  },
+  async setGoalkeepers(teamId, goalkeeperIds) {
+    await query("update players set is_goalkeeper = (id = any($2)) where team_id = $1", [teamId, goalkeeperIds]);
+    return this.findById(teamId);
   },
   async updateResult(id, result) {
     const { rows } = await query(

@@ -26,24 +26,41 @@ const STAT_FIELDS = [
 ];
 const ROUNDS = ["Oitavas de final", "Quartas de final", "Semifinal", "Final"];
 
-function playerRow(player, team, existingByPlayer) {
+function badgeText({ played, goals, assists, yellowCards, redCards, mvp, isGoalkeeper }) {
+  if (!played) return "Não lançado";
+  const parts = [];
+  if (isGoalkeeper) parts.push("🧤");
+  if (goals) parts.push(`⚽${goals}`);
+  if (assists) parts.push(`🎯${assists}`);
+  if (yellowCards) parts.push(`🟨${yellowCards}`);
+  if (redCards) parts.push(`🟥${redCards}`);
+  if (mvp) parts.push("⭐");
+  return parts.length ? parts.join(" ") : "Em campo";
+}
+function playerCard(player, existingByPlayer) {
   const stat = existingByPlayer.get(player.id);
-  const cell = key => `<td><input type="number" min="0" name="${key}[${player.id}]" value="${stat ? stat[key] : 0}"></td>`;
-  return `<tr><td>${escapeHtml(player.name || "—")}<small>${escapeHtml(team.name)}${player.former ? " · saiu do time" : ""}</small></td><td><input type="checkbox" name="played[${player.id}]" value="1" ${stat ? "checked" : ""}></td><td><input type="checkbox" name="goalkeeper[${player.id}]" value="1" ${stat?.isGoalkeeper ? "checked" : ""}></td><td><input type="checkbox" name="mvp[${player.id}]" value="1" ${stat?.mvp ? "checked" : ""}></td>${STAT_FIELDS.map(field => cell(field.key)).join("")}</tr>`;
+  const played = Boolean(stat);
+  const isGoalkeeper = stat ? stat.isGoalkeeper : Boolean(player.isGoalkeeper);
+  const dialogId = `dlg-${player.id}`;
+  const badgeId = `badge-${player.id}`;
+  const fields = STAT_FIELDS.map(field => `<label>${field.label}<input type="number" min="0" name="${field.key}[${player.id}]" value="${stat ? stat[field.key] : 0}"></label>`).join("");
+  const badge = badgeText({ played, goals: stat?.goals || 0, assists: stat?.assists || 0, yellowCards: stat?.yellowCards || 0, redCards: stat?.redCards || 0, mvp: stat?.mvp || false, isGoalkeeper });
+  return `<button type="button" class="player-card-btn" data-dialog="${dialogId}"><span class="player-card-name">${escapeHtml(player.name || "—")}${player.former ? "<small>saiu do time</small>" : ""}</span><span class="player-card-badges" id="${badgeId}">${badge}</span></button><dialog id="${dialogId}" class="stat-modal" data-badge="${badgeId}"><div class="stat-modal-head"><h3>${escapeHtml(player.name || "—")}</h3><button type="button" class="stat-modal-close" data-close>✕</button></div><div class="stat-modal-toggles"><label><input type="checkbox" name="played[${player.id}]" value="1" ${played ? "checked" : ""}> Em campo</label><label><input type="checkbox" name="goalkeeper[${player.id}]" value="1" ${isGoalkeeper ? "checked" : ""}> 🧤 Goleiro</label><label><input type="checkbox" name="mvp[${player.id}]" value="1" ${stat?.mvp ? "checked" : ""}> ⭐ MVP</label></div><div class="stat-modal-grid">${fields}</div><button type="button" class="button button-primary full" data-close>Salvar e fechar</button></dialog>`;
 }
 function rosterWithFormerPlayers(team, teamId, existing) {
   const knownIds = new Set(team.players.map(player => player.id));
   const former = existing
     .filter(stat => stat.teamId === teamId && !knownIds.has(stat.playerId))
-    .map(stat => ({ id: stat.playerId, name: stat.playerName, phone: "", former: true }));
+    .map(stat => ({ id: stat.playerId, name: stat.playerName, phone: "", isGoalkeeper: stat.isGoalkeeper, former: true }));
   return { ...team, players: [...team.players, ...former] };
 }
-function statsTableHtml(homeTeam, awayTeam, existing) {
+function teamSection(title, team, existingByPlayer) {
+  const cards = team.players.map(player => playerCard(player, existingByPlayer)).join("");
+  return `<div class="match-team-section"><h3>${title} <span>${escapeHtml(team.name)}</span></h3><div class="player-cards">${cards}</div></div>`;
+}
+function matchPlayersHtml(homeTeam, awayTeam, existing) {
   const existingByPlayer = new Map(existing.map(stat => [stat.playerId, stat]));
-  const rows = homeTeam.players.map(player => playerRow(player, homeTeam, existingByPlayer)).join("")
-    + awayTeam.players.map(player => playerRow(player, awayTeam, existingByPlayer)).join("");
-  const headers = `<th>Jogador</th><th>Em campo</th><th>Goleiro</th><th>MVP</th>${STAT_FIELDS.map(field => `<th>${field.label}</th>`).join("")}`;
-  return `<table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>`;
+  return teamSection("Time da casa ·", homeTeam, existingByPlayer) + teamSection("Time visitante ·", awayTeam, existingByPlayer);
 }
 function teamOptionsHtml(teams) {
   return teams.map(team => `<option value="${team.id}">${escapeHtml(team.name)}</option>`).join("");
@@ -77,7 +94,7 @@ const MatchController = {
       homeScore: match.homeScore ?? "",
       awayScore: match.awayScore ?? "",
       finishedChecked: match.status === "finished" ? "checked" : "",
-      statsTable: statsTableHtml(homeRoster, awayRoster, existing)
+      matchPlayers: matchPlayersHtml(homeRoster, awayRoster, existing)
     }));
   },
   async save(request, response, id) {
