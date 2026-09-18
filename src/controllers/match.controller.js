@@ -29,7 +29,14 @@ const ROUNDS = ["Oitavas de final", "Quartas de final", "Semifinal", "Final"];
 function playerRow(player, team, existingByPlayer) {
   const stat = existingByPlayer.get(player.id);
   const cell = key => `<td><input type="number" min="0" name="${key}[${player.id}]" value="${stat ? stat[key] : 0}"></td>`;
-  return `<tr><td>${escapeHtml(player.name || "—")}<small>${escapeHtml(team.name)}</small></td><td><input type="checkbox" name="played[${player.id}]" value="1" ${stat ? "checked" : ""}></td><td><input type="checkbox" name="goalkeeper[${player.id}]" value="1" ${stat?.isGoalkeeper ? "checked" : ""}></td><td><input type="checkbox" name="mvp[${player.id}]" value="1" ${stat?.mvp ? "checked" : ""}></td>${STAT_FIELDS.map(field => cell(field.key)).join("")}</tr>`;
+  return `<tr><td>${escapeHtml(player.name || "—")}<small>${escapeHtml(team.name)}${player.former ? " · saiu do time" : ""}</small></td><td><input type="checkbox" name="played[${player.id}]" value="1" ${stat ? "checked" : ""}></td><td><input type="checkbox" name="goalkeeper[${player.id}]" value="1" ${stat?.isGoalkeeper ? "checked" : ""}></td><td><input type="checkbox" name="mvp[${player.id}]" value="1" ${stat?.mvp ? "checked" : ""}></td>${STAT_FIELDS.map(field => cell(field.key)).join("")}</tr>`;
+}
+function rosterWithFormerPlayers(team, teamId, existing) {
+  const knownIds = new Set(team.players.map(player => player.id));
+  const former = existing
+    .filter(stat => stat.teamId === teamId && !knownIds.has(stat.playerId))
+    .map(stat => ({ id: stat.playerId, name: stat.playerName, phone: "", former: true }));
+  return { ...team, players: [...team.players, ...former] };
 }
 function statsTableHtml(homeTeam, awayTeam, existing) {
   const existingByPlayer = new Map(existing.map(stat => [stat.playerId, stat]));
@@ -60,6 +67,8 @@ const MatchController = {
       TeamModel.findById(match.away.id),
       MatchStatsModel.listByMatch(id)
     ]);
+    const homeRoster = rosterWithFormerPlayers(homeTeam, match.home.id, existing);
+    const awayRoster = rosterWithFormerPlayers(awayTeam, match.away.id, existing);
     send(response, 200, render("match-detail", {
       matchId: match.id,
       round: escapeHtml(match.round),
@@ -68,7 +77,7 @@ const MatchController = {
       homeScore: match.homeScore ?? "",
       awayScore: match.awayScore ?? "",
       finishedChecked: match.status === "finished" ? "checked" : "",
-      statsTable: statsTableHtml(homeTeam, awayTeam, existing)
+      statsTable: statsTableHtml(homeRoster, awayRoster, existing)
     }));
   },
   async save(request, response, id) {
@@ -80,7 +89,10 @@ const MatchController = {
       awayScore: body.awayScore === "" ? null : Number(body.awayScore),
       status: body.finished === "1" ? "finished" : "scheduled"
     });
-    const [homeTeam, awayTeam] = await Promise.all([TeamModel.findById(match.home.id), TeamModel.findById(match.away.id)]);
+    const existing = await MatchStatsModel.listByMatch(id);
+    const [homeTeamRaw, awayTeamRaw] = await Promise.all([TeamModel.findById(match.home.id), TeamModel.findById(match.away.id)]);
+    const homeTeam = rosterWithFormerPlayers(homeTeamRaw, match.home.id, existing);
+    const awayTeam = rosterWithFormerPlayers(awayTeamRaw, match.away.id, existing);
     const players = [...homeTeam.players.map(player => ({ player, team: homeTeam })), ...awayTeam.players.map(player => ({ player, team: awayTeam }))];
     const rows = players
       .filter(({ player }) => body[`played[${player.id}]`] === "1")

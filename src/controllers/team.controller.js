@@ -11,10 +11,19 @@ function playersFromBody(body) {
     phone: String(body[`playerPhone${index + 1}`] || "").trim()
   })).filter(player => player.name || player.phone);
 }
+function playerEntriesFromBody(body) {
+  return Array.from({ length: 10 }, (_, index) => ({
+    id: body[`playerId${index + 1}`] || null,
+    name: String(body[`playerName${index + 1}`] || "").trim(),
+    phone: String(body[`playerPhone${index + 1}`] || "").trim(),
+    left: body[`playerLeft${index + 1}`] === "1"
+  }));
+}
 function playerFields(players = []) {
   return Array.from({ length: 10 }, (_, index) => {
     const player = players[index] || {};
-    return `<div class="player-card"><span>${String(index + 1).padStart(2, "0")}</span><div><input name="playerName${index + 1}" placeholder="Nome do jogador" maxlength="100" value="${escapeHtml(player.name || "")}"><input name="playerPhone${index + 1}" placeholder="Telefone" inputmode="tel" maxlength="20" value="${escapeHtml(player.phone || "")}"></div></div>`;
+    const hasPlayer = Boolean(player.id);
+    return `<div class="player-card"><span>${String(index + 1).padStart(2, "0")}</span><div>${hasPlayer ? `<input type="hidden" name="playerId${index + 1}" value="${player.id}">` : ""}<input name="playerName${index + 1}" placeholder="Nome do jogador" maxlength="100" value="${escapeHtml(player.name || "")}"><input name="playerPhone${index + 1}" placeholder="Telefone" inputmode="tel" maxlength="20" value="${escapeHtml(player.phone || "")}">${hasPlayer ? `<label class="player-left-toggle"><input type="checkbox" name="playerLeft${index + 1}" value="1"> Jogador saiu do time (coloque o nome de quem entrou no lugar)</label>` : ""}</div></div>`;
   }).join("");
 }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[character])); }
@@ -90,8 +99,8 @@ const TeamController = {
   },
   async updatePlayers(request, response, team, token) {
     if (!team || team.accessToken !== token) return sendJson(response, 403, { error: "Link de gerenciamento inválido ou expirado." });
-    const players = playersFromBody(await parseBody(request));
-    await TeamModel.updatePlayers(team.id, players);
+    const entries = playerEntriesFromBody(await parseBody(request));
+    await TeamModel.updatePlayers(team.id, entries);
     redirect(response, `/time/${team.id}?token=${token}&salvo=1`);
   },
   async payment(request, response, team, token) {

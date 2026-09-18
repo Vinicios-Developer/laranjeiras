@@ -30,8 +30,10 @@ create table if not exists players (
   team_id uuid not null references teams(id) on delete cascade,
   sort_order int not null,
   name text,
-  phone text
+  phone text,
+  active boolean not null default true
 );
+alter table players add column if not exists active boolean not null default true;
 create index if not exists players_team_id_idx on players(team_id);
 
 create table if not exists matches (

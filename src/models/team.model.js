@@ -21,7 +21,7 @@ function toTeam(row) {
 }
 async function attachPlayers(team) {
   if (!team) return team;
-  const { rows } = await query("select id, name, phone from players where team_id = $1 order by sort_order", [team.id]);
+  const { rows } = await query("select id, name, phone from players where team_id = $1 and active = true order by sort_order", [team.id]);
   team.players = rows;
   return team;
 }
@@ -31,6 +31,35 @@ async function replacePlayers(teamId, players) {
   for (const player of players) {
     order += 1;
     await query("insert into players (team_id, sort_order, name, phone) values ($1, $2, $3, $4)", [teamId, order, player.name, player.phone]);
+  }
+}
+async function upsertPlayers(teamId, entries) {
+  let order = 0;
+  for (const entry of entries) {
+    const name = String(entry.name || "").trim();
+    const phone = String(entry.phone || "").trim();
+    const isEmpty = !name && !phone;
+    if (entry.id && entry.left) {
+      await query("update players set active = false where id = $1 and team_id = $2", [entry.id, teamId]);
+      if (!isEmpty) {
+        order += 1;
+        await query("insert into players (team_id, sort_order, name, phone) values ($1, $2, $3, $4)", [teamId, order, name, phone]);
+      }
+      continue;
+    }
+    if (entry.id && isEmpty) {
+      await query("update players set active = false where id = $1 and team_id = $2", [entry.id, teamId]);
+      continue;
+    }
+    if (entry.id) {
+      order += 1;
+      await query("update players set name = $1, phone = $2, sort_order = $3 where id = $4 and team_id = $5", [name, phone, order, entry.id, teamId]);
+      continue;
+    }
+    if (!isEmpty) {
+      order += 1;
+      await query("insert into players (team_id, sort_order, name, phone) values ($1, $2, $3, $4)", [teamId, order, name, phone]);
+    }
   }
 }
 
@@ -68,10 +97,10 @@ const TeamModel = {
     await replacePlayers(team.id, data.players || []);
     return attachPlayers(team);
   },
-  async updatePlayers(id, players) {
+  async updatePlayers(id, entries) {
     const team = await this.findById(id);
     if (!team) return null;
-    await replacePlayers(id, players);
+    await upsertPlayers(id, entries);
     await query("update teams set updated_at = now() where id = $1", [id]);
     return this.findById(id);
   },

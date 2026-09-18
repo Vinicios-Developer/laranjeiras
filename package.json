@@ -5,7 +5,9 @@
   "description": "Primeira versão da plataforma de inscrição da Copa Laranjeiras de Futsal.",
   "scripts": {
     "start": "node server.js",
-    "migrate": "node scripts/migrate-data.js"
+    "start:local": "node -r dotenv/config server.js dotenv_config_path=.env.local",
+    "migrate": "node scripts/migrate-data.js",
+    "seed:local": "node scripts/seed-local.js"
   },
   "engines": {
     "node": ">=18"
