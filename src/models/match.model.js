@@ -24,8 +24,8 @@ const selectMatches = `select m.id, m.round, m.position, m.status, m.home_score,
        left join teams away on away.id = m.away_team_id`;
 
 const MatchModel = {
-  async replaceAll(matches) {
-    await query("delete from matches", []);
+  async replaceRound(round, matches) {
+    await query("delete from matches where round = $1", [round]);
     for (const match of matches) {
       await query(
         "insert into matches (id, round, position, home_team_id, away_team_id, status) values ($1, $2, $3, $4, $5, $6)",

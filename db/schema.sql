@@ -76,8 +76,10 @@ create table if not exists match_player_stats (
   penalties_suffered int not null default 0,
   yellow_cards int not null default 0,
   red_cards int not null default 0,
+  position_slot text,
   unique (match_id, player_id)
 );
+alter table match_player_stats add column if not exists position_slot text;
 create index if not exists match_player_stats_match_id_idx on match_player_stats(match_id);
 create index if not exists match_player_stats_player_id_idx on match_player_stats(player_id);
 

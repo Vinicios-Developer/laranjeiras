@@ -9,6 +9,6 @@ async function generateBracket() {
   for (let index = 0; index < ordered.length; index += 2) {
     matches.push({ id: `match-${index / 2 + 1}`, round: "Oitavas de final", position: index / 2 + 1, home: ordered[index], away: ordered[index + 1] || null, status: "scheduled" });
   }
-  return MatchModel.replaceAll(matches);
+  return MatchModel.replaceRound("Oitavas de final", matches);
 }
 module.exports = { generateBracket };

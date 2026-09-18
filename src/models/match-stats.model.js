@@ -3,8 +3,10 @@ const { query } = require("./database");
 const FIELDS = [
   "is_goalkeeper", "mvp", "goals", "penalty_goals", "shots_on_target", "shots_off_target",
   "assists", "saves", "difficult_saves", "goals_conceded", "tackles", "interceptions",
-  "fouls_committed", "fouls_suffered", "penalties_committed", "penalties_suffered", "yellow_cards", "red_cards"
+  "fouls_committed", "fouls_suffered", "penalties_committed", "penalties_suffered", "yellow_cards", "red_cards",
+  "position_slot"
 ];
+const DEFAULTS = { is_goalkeeper: false, mvp: false, position_slot: null };
 
 function toStat(row) {
   return {
@@ -29,7 +31,8 @@ function toStat(row) {
     penaltiesCommitted: row.penalties_committed,
     penaltiesSuffered: row.penalties_suffered,
     yellowCards: row.yellow_cards,
-    redCards: row.red_cards
+    redCards: row.red_cards,
+    positionSlot: row.position_slot
   };
 }
 
@@ -49,7 +52,7 @@ const MatchStatsModel = {
   async replaceForMatch(matchId, rows) {
     await query("delete from match_player_stats where match_id = $1", [matchId]);
     for (const row of rows) {
-      const values = [matchId, row.teamId, row.playerId, ...FIELDS.map(field => row[field] ?? (field === "is_goalkeeper" || field === "mvp" ? false : 0))];
+      const values = [matchId, row.teamId, row.playerId, ...FIELDS.map(field => row[field] ?? (field in DEFAULTS ? DEFAULTS[field] : 0))];
       const placeholders = values.map((_, index) => `$${index + 1}`).join(", ");
       await query(
         `insert into match_player_stats (match_id, team_id, player_id, ${FIELDS.join(", ")}) values (${placeholders})`,

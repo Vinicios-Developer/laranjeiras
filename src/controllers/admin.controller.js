@@ -7,6 +7,7 @@ const { send, parseBody, redirect } = require("../utils/http");
 const { render } = require("../views/layout");
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[character])); }
 function csv(value) { return `"${String(value ?? "").replace(/"/g, '""')}"`; }
+const BRACKET_ROUNDS = ["Oitavas de final", "Quartas de final", "Semifinal", "Final"];
 const AdminController = {
   async dashboard(request, response, user) {
     const url = new URL(request.url, "http://localhost"); const query = url.searchParams.get("q") || ""; const status = url.searchParams.get("status") || "";
@@ -50,16 +51,30 @@ const AdminController = {
     response.writeHead(200, { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": 'attachment; filename="copa-laranjeiras-times.csv"', "Cache-Control": "no-store" });
     response.end(`﻿${rows.join("\r\n")}`);
   },
-  async bracket(_, response) {
+  async bracket(request, response) {
+    const url = new URL(request.url, "http://localhost");
     const allMatches = await MatchModel.list();
-    const matches = allMatches.map(match => `<article class="match"><small>${match.round} · Jogo ${match.position}</small><b>${escapeHtml(match.home.name)}</b><span>×</span><b>${match.away ? escapeHtml(match.away.name) : "A definir"}</b></article>`).join("");
+    const byRound = new Map();
+    allMatches.forEach(match => {
+      if (!byRound.has(match.round)) byRound.set(match.round, []);
+      byRound.get(match.round).push(match);
+    });
+    const orderedRounds = [...BRACKET_ROUNDS.filter(round => byRound.has(round)), ...[...byRound.keys()].filter(round => !BRACKET_ROUNDS.includes(round))];
+    const columns = orderedRounds.map(round => {
+      const cards = byRound.get(round).map(match => {
+        const finished = match.status === "finished";
+        return `<a class="bracket-card-link" href="/admin/partidas/${match.id}"><small>Jogo ${match.position}</small><div class="bracket-card-team"><b>${escapeHtml(match.home.name)}</b>${finished ? `<span>${match.homeScore ?? 0}</span>` : ""}</div><div class="bracket-card-team"><b>${match.away ? escapeHtml(match.away.name) : "A definir"}</b>${finished ? `<span>${match.awayScore ?? 0}</span>` : ""}</div><span class="bracket-card-status ${finished ? "finished" : ""}">${finished ? "Encerrada" : "Agendada"}</span></a>`;
+      }).join("");
+      return `<div class="bracket-column"><h3>${round}</h3><div class="bracket-column-matches">${cards}</div></div>`;
+    }).join("");
     const matchesTable = allMatches.map(match => `<tr><td>${escapeHtml(match.round)}</td><td>${escapeHtml(match.home.name)}<span> × </span>${match.away ? escapeHtml(match.away.name) : "A definir"}</td><td>${match.homeScore ?? "—"} × ${match.awayScore ?? "—"}</td><td><span class="status ${match.status === "finished" ? "approved" : "pending"}">${match.status === "finished" ? "Encerrada" : "Agendada"}</span></td><td><a class="action-btn action-view" href="/admin/partidas/${match.id}">Lançar estatísticas</a></td></tr>`).join("") || '<tr><td colspan="5">Nenhuma partida cadastrada ainda.</td></tr>';
     send(response, 200, render("bracket", {
-      matches: matches || '<p class="muted">Nenhum chaveamento gerado ainda.</p>',
+      matches: columns || '<p class="muted">Nenhum chaveamento gerado ainda.</p>',
+      notice: url.searchParams.has("gerado") ? "Chaveamento gerado! As partidas da 1ª rodada foram atualizadas." : "",
       newMatchForm: await MatchController.newMatchForm(),
       matchesTable
     }));
   },
-  async generate(_, response) { await generateBracket(); redirect(response, "/admin/chaveamento"); }
+  async generate(_, response) { await generateBracket(); redirect(response, "/admin/chaveamento?gerado=1"); }
 };
 module.exports = AdminController;
