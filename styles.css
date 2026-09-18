@@ -231,3 +231,11 @@ footer{padding-left:9vw;padding-right:9vw}
   .nav-links a:hover,.nav-links a:focus-visible{background:#f0f2e9}
   .nav-links a:nth-child(3)::after{display:none}
 }
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding-top:0}
+.stats-grid .table-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
+.stats-grid h3{font-size:16px;margin:0 0 16px}
+.stats-grid table{width:100%;min-width:0;border-collapse:collapse}
+.stats-grid th{font-size:9px;padding:8px 4px}
+.stats-grid td{font-size:12px;padding:10px 4px}
+.stats-grid td small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+@media(max-width:900px){.stats-grid{grid-template-columns:1fr}}

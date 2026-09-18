@@ -74,6 +74,12 @@
 .result-form .button{margin:0}
 .admin-main>.back-home{margin-bottom:20px;border:1px solid #d2dacb;background:#fff;color:var(--ink)}
 .admin-main>.back-home:hover{border-color:var(--orange);color:var(--orange-dark)}
+.stats-form table th,.stats-form table td{padding:6px 8px;font-size:11px;white-space:nowrap}
+.stats-form table td:first-child{white-space:normal;min-width:140px}
+.stats-form table td small{display:block;color:var(--muted);font-size:10px}
+.stats-form table input[type="number"]{width:52px;padding:6px;margin:0;text-align:center}
+.stats-form table input[type="checkbox"]{width:auto;margin:0}
+.stats-form table{min-width:1400px}
 @media(max-width:700px){
   .admin-heading-actions{align-items:stretch;flex-direction:column}
   .chart-row{grid-template-columns:100px 1fr 24px}

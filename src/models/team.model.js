@@ -21,7 +21,7 @@ function toTeam(row) {
 }
 async function attachPlayers(team) {
   if (!team) return team;
-  const { rows } = await query("select name, phone from players where team_id = $1 order by sort_order", [team.id]);
+  const { rows } = await query("select id, name, phone from players where team_id = $1 order by sort_order", [team.id]);
   team.players = rows;
   return team;
 }

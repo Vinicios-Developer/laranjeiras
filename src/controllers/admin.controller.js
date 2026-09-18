@@ -1,6 +1,7 @@
 const TeamModel = require("../models/team.model");
 const SettingsModel = require("../models/settings.model");
 const MatchModel = require("../models/match.model");
+const MatchController = require("./match.controller");
 const { generateBracket } = require("../services/bracket.service");
 const { send, parseBody, redirect } = require("../utils/http");
 const { render } = require("../views/layout");
@@ -40,7 +41,16 @@ const AdminController = {
     response.writeHead(200, { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": 'attachment; filename="copa-laranjeiras-times.csv"', "Cache-Control": "no-store" });
     response.end(`﻿${rows.join("\r\n")}`);
   },
-  async bracket(_, response) { const matches = (await MatchModel.list()).map(match => `<article class="match"><small>${match.round} · Jogo ${match.position}</small><b>${escapeHtml(match.home.name)}</b><span>×</span><b>${match.away ? escapeHtml(match.away.name) : "A definir"}</b></article>`).join(""); send(response, 200, render("bracket", { matches: matches || '<p class="muted">Nenhum chaveamento gerado ainda.</p>' })); },
+  async bracket(_, response) {
+    const allMatches = await MatchModel.list();
+    const matches = allMatches.map(match => `<article class="match"><small>${match.round} · Jogo ${match.position}</small><b>${escapeHtml(match.home.name)}</b><span>×</span><b>${match.away ? escapeHtml(match.away.name) : "A definir"}</b></article>`).join("");
+    const matchesTable = allMatches.map(match => `<tr><td>${escapeHtml(match.round)}</td><td>${escapeHtml(match.home.name)}<span> × </span>${match.away ? escapeHtml(match.away.name) : "A definir"}</td><td>${match.homeScore ?? "—"} × ${match.awayScore ?? "—"}</td><td><span class="status ${match.status === "finished" ? "approved" : "pending"}">${match.status === "finished" ? "Encerrada" : "Agendada"}</span></td><td><a class="action-btn action-view" href="/admin/partidas/${match.id}">Lançar estatísticas</a></td></tr>`).join("") || '<tr><td colspan="5">Nenhuma partida cadastrada ainda.</td></tr>';
+    send(response, 200, render("bracket", {
+      matches: matches || '<p class="muted">Nenhum chaveamento gerado ainda.</p>',
+      newMatchForm: await MatchController.newMatchForm(),
+      matchesTable
+    }));
+  },
   async generate(_, response) { await generateBracket(); redirect(response, "/admin/chaveamento"); }
 };
 module.exports = AdminController;

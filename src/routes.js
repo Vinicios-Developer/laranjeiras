@@ -3,6 +3,8 @@ const path = require("path");
 const AuthController = require("./controllers/auth.controller");
 const TeamController = require("./controllers/team.controller");
 const AdminController = require("./controllers/admin.controller");
+const MatchController = require("./controllers/match.controller");
+const StatsController = require("./controllers/stats.controller");
 const TeamModel = require("./models/team.model");
 const { currentUser, requireRole } = require("./middleware/auth.middleware");
 const { staticFile, redirect, sendError } = require("./utils/http");
@@ -21,6 +23,7 @@ const router = {
     if (request.method === "GET" && route === "/cadastro") return response.end(render("register-user"));
     if (request.method === "GET" && route === "/inscricao") return HomeController.register(request, response);
     if (request.method === "GET" && route === "/acesso-time") return HomeController.teamAccess(request, response, url.searchParams.get("error") || "");
+    if (request.method === "GET" && route === "/estatisticas") return StatsController.index(request, response);
     if (request.method === "POST" && route === "/login") return AuthController.login(request, response);
     if (request.method === "POST" && route === "/cadastro") return AuthController.register(request, response);
     if (request.method === "GET" && route === "/logout") return AuthController.logout(request, response);
@@ -54,6 +57,10 @@ const router = {
     if (request.method === "GET" && route === "/admin/exportar-times") { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return AdminController.exportTeams(request, response); return; }
     if (request.method === "GET" && route === "/admin/chaveamento") { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return AdminController.bracket(request, response); return; }
     if (request.method === "POST" && route === "/admin/chaveamento") { const user = await requireRole(request, response, ["admin"]); if (user) return AdminController.generate(request, response); return; }
+    if (request.method === "POST" && route === "/admin/partidas") { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return MatchController.create(request, response); return; }
+    const matchRoute = route.match(/^\/admin\/partidas\/([^/]+)$/);
+    if (request.method === "GET" && matchRoute) { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return MatchController.detail(request, response, matchRoute[1]); return; }
+    if (request.method === "POST" && matchRoute) { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return MatchController.save(request, response, matchRoute[1]); return; }
     const action = route.match(/^\/admin\/times\/([^/]+)\/(aprovar|reabrir)$/);
     if (request.method === "POST" && action) { const user = await requireRole(request, response, ["organizer", "admin"]); if (user) return action[2] === "aprovar" ? TeamController.approve(request, response, action[1]) : TeamController.reopen(request, response, action[1]); return; }
     if (request.method === "GET" && staticFile(response, path.join("public", route))) return;
