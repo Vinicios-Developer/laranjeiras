@@ -14,7 +14,7 @@ function staticFile(response, relativePath) {
   if (!file.startsWith(root)) return false;
   if (!fs.existsSync(file)) return false;
   const extension = path.extname(file);
-  const contentTypes = { ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml" };
+  const contentTypes = { ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".ico": "image/x-icon" };
   response.writeHead(200, {
     "Content-Type": contentTypes[extension] || "application/octet-stream",
     "Cache-Control": "no-store, max-age=0",

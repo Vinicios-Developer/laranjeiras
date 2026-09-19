@@ -134,6 +134,23 @@ input, select, textarea { border-radius: 8px; border-color: #d7ddd1; }
 .details{max-width:none;padding-top:0;background:#f0efe6}
 .detail-card{min-height:320px;padding:32px;border-radius:14px}
 .detail-card h3{font-size:56px}
+.steps-section .intro-grid,.schedule-section .intro-grid,.faq-section .intro-grid{grid-template-columns:.85fr 1.15fr}
+.steps-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.step-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 24px;box-shadow:0 10px 26px rgba(24,35,31,.05)}
+.step-number{display:block;font:800 13px "Montserrat";color:var(--orange);letter-spacing:1px;margin-bottom:10px}
+.step-card h3{font-size:17px;margin:0 0 8px;letter-spacing:-.3px}
+.step-card p{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+.schedule-list{display:grid;gap:2px;background:var(--line);border-radius:14px;overflow:hidden}
+.schedule-item{display:flex;align-items:center;gap:18px;background:#fff;padding:16px 22px}
+.schedule-item b{min-width:56px;font:800 15px "Montserrat";color:var(--orange-dark)}
+.schedule-item span{font-size:13px;color:var(--ink)}
+.faq-list{display:grid;gap:12px}
+.faq-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 22px}
+.faq-item summary{cursor:pointer;font-size:14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";font-size:20px;font-weight:400;color:var(--orange);transition:transform .2s;flex-shrink:0}
+.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-item p{font-size:13px;color:var(--muted);line-height:1.65;margin:14px 0 0}
 .community-banner{max-width:1200px;margin:0 auto 110px;padding:55px 65px;border-radius:16px;background:#d9e56f}
 .community-banner h2{font-weight:800;letter-spacing:-2px}
 footer{padding-left:9vw;padding-right:9vw}
@@ -172,6 +189,9 @@ footer{padding-left:9vw;padding-right:9vw}
   .details{gap:16px}
   .detail-card{min-height:245px}
   .community-banner{margin:0 7vw 70px;padding:34px 26px}
+  .steps-section .intro-grid,.schedule-section .intro-grid,.faq-section .intro-grid{grid-template-columns:1fr}
+  .steps-grid{grid-template-columns:1fr}
+  .schedule-item{padding:14px 18px}
 }
 
 .mobile-nav-toggle{display:none}
