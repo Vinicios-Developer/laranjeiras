@@ -58,7 +58,23 @@ async function upsertPlayers(teamId, entries) {
     }
     if (!isEmpty) {
       order += 1;
-      await query("insert into players (team_id, sort_order, name, phone, is_goalkeeper) values ($1, $2, $3, $4, $5)", [teamId, order, name, phone, Boolean(entry.isGoalkeeper)]);
+      // Sem id no formulário: pode ser jogador novo ou reenvio (duplo clique, rede
+      // instável) do mesmo nome já cadastrado. Reaproveita o ativo existente em vez
+      // de inserir de novo, pra evitar duplicar o jogador. Casa só pelo nome (telefone
+      // é opcional e não é confiável pra identificar reenvio); só troca o telefone
+      // salvo se vier um novo valor não vazio, pra não apagar um telefone já salvo.
+      const { rows: existing } = await query(
+        "select id from players where team_id = $1 and active = true and lower(trim(name)) = lower($2) limit 1",
+        [teamId, name]
+      );
+      if (existing[0]) {
+        await query(
+          "update players set sort_order = $1, is_goalkeeper = $2, phone = coalesce(nullif($3, ''), phone) where id = $4",
+          [order, Boolean(entry.isGoalkeeper), phone, existing[0].id]
+        );
+      } else {
+        await query("insert into players (team_id, sort_order, name, phone, is_goalkeeper) values ($1, $2, $3, $4, $5)", [teamId, order, name, phone, Boolean(entry.isGoalkeeper)]);
+      }
     }
   }
 }
