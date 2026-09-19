@@ -15,28 +15,11 @@
         <button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="stats-navigation">Menu <span>☰</span></button>
         <nav class="nav-links" id="stats-navigation"><a href="/#sobre">A Copa</a><a href="/#premiacao">Premiação</a><a
                 href="/inscricao">Inscrever time</a><a href="/acesso-time">Acessar meu time</a><a
-                href="/estatisticas">Estatísticas</a></nav>
+                class="active" href="/estatisticas">Estatísticas</a></nav>
         <div class="topbar-church"><img src="/assets/logo-iap.png" alt="IAP"><span>IAP<br><b>Laranjeiras</b></span>
         </div>
     </header>
-    <main>
-        <section class="section intro" id="stats-intro">
-            <p class="eyebrow">Estatísticas</p>
-            <div class="intro-grid">
-                <h2>Quem está <span>brilhando</span> na Copa.</h2>
-                <div>
-                    <p>Números somados de todas as partidas já lançadas pela organização. Atualizado conforme os jogos acontecem.</p>
-                </div>
-            </div>
-        </section>
-        <section class="section stats-grid">
-            <div class="table-card"><h3>⚽ Artilheiros</h3>{{goalsTable}}</div>
-            <div class="table-card"><h3>🎯 Assistências</h3>{{assistsTable}}</div>
-            <div class="table-card"><h3>🧤 Defesas</h3>{{savesTable}}</div>
-            <div class="table-card"><h3>🟨 Cartões</h3>{{cardsTable}}</div>
-            <div class="table-card"><h3>🏅 Craque da partida</h3>{{mvpTable}}</div>
-        </section>
-    </main>
+    <main>{{body}}</main>
     <footer>
         <div class="brand"><span
                 class="brand-mark">CL</span><span><strong>COPA</strong><small>LARANJEIRAS</small></span></div>

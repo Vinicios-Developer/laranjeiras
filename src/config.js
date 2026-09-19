@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   root: path.resolve(__dirname, ".."),
   sessionTtl: 30 * 24 * 60 * 60 * 1000,
-  tournament: { maxTeams: 24, entryFee: 250 },
+  tournament: { maxTeams: 24, entryFee: 250, date: "2026-10-18" },
   payments: {
     dueDateInstallment1: "30/09",
     dueDateInstallment2: "05/10",
