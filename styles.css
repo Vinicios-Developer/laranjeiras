@@ -77,7 +77,8 @@ input, select, textarea { border-radius: 8px; border-color: #d7ddd1; }
 /* Copa identity: editorial sport, community warmth and clearer conversion. */
 .topbar{height:86px;padding-left:7vw;padding-right:7vw;background:#faf9f3;border-bottom:1px solid rgba(23,33,29,.08)}
 .topbar .brand-mark{width:42px;height:42px;box-shadow:0 5px 14px rgba(201,78,33,.2)}
-.nav-links a{position:relative;padding:8px 0}
+.nav-links a{position:relative;padding:8px 0;transition:color .2s}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--orange-dark)}
 .nav-links a.active{color:var(--orange-dark)}
 .nav-links a.active::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--orange)}
 .hero{min-height:680px;padding:105px 9vw 90px;background:#d9e56f}
