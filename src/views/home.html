@@ -7,6 +7,7 @@
     <title>Copa Laranjeiras | Futsal</title>
     <link rel="stylesheet" href="/styles-v2.css">
     <link rel="icon" type="image/png" href="/assets/logo-iap.png">
+    <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 
 <body>
@@ -26,21 +27,33 @@
                 <h1>Fé, amizade<br>e <em>bola na rede.</em></h1>
                 <p class="hero-copy">A comunidade se reúne para viver um domingo de futsal, alegria e comunhão. Monte
                     seu time e venha disputar a primeira Copa Laranjeiras.</p>
+                <div class="countdown" id="countdown" data-target="{{eventDateTime}}">
+                    <span class="countdown-label">Faltam</span>
+                    <div class="countdown-units">
+                        <div class="countdown-unit"><strong id="cd-days">00</strong><small>dias</small></div>
+                        <div class="countdown-unit"><strong id="cd-hours">00</strong><small>horas</small></div>
+                        <div class="countdown-unit"><strong id="cd-minutes">00</strong><small>min</small></div>
+                        <div class="countdown-unit"><strong id="cd-seconds">00</strong><small>seg</small></div>
+                    </div>
+                </div>
                 <div class="hero-actions"><a class="button button-primary" href="/inscricao">Quero inscrever meu time
                         <b>→</b></a><a class="hero-secondary" href="#sobre">Descobrir a Copa <span>↓</span></a></div>
                 <div class="hero-meta">
-                    <div><strong>24</strong><span>times disponíveis</span></div>
+                    <div><strong>{{teamsRegistered}}</strong><span>times inscritos</span></div>
+                    <div><strong>{{spotsLeft}}</strong><span>vagas restantes</span></div>
                     <div><strong>R$ 1.500</strong><span>premiação do campeão</span></div>
-                    <div><strong>R$ 250</strong><span>por time</span></div>
                 </div>
             </div>
             <div class="hero-art">
+                <span class="hero-art-dot hero-art-dot-1"></span>
+                <span class="hero-art-dot hero-art-dot-2"></span>
+                <span class="hero-art-dot hero-art-dot-3"></span>
                 <div class="hero-art-copy"><small>COMUNIDADE</small><strong>JOGA<br>JUNTO</strong><span>⚽</span></div>
             </div>
         </section>
-        <section class="location-strip"><b>18 OUT · 8H</b><span><strong>Escola Estadual Prof. Sebastiana Braga</strong>
+        <section class="location-strip reveal"><b>18 OUT · 8H</b><span><strong>Escola Estadual Prof. Sebastiana Braga</strong>
                 · Av. Timbiras, Cidade Nova, Manaus - AM</span><i>Entrada gratuita · Traga sua torcida</i></section>
-        <section class="section intro" id="sobre">
+        <section class="section intro reveal" id="sobre">
             <p class="eyebrow">01 · A Copa</p>
             <div class="intro-grid">
                 <h2>Um campeonato feito para a <span>nossa comunidade.</span></h2>
@@ -54,20 +67,20 @@
             </div>
         </section>
         <section class="section details">
-            <div class="detail-card dark">
+            <div class="detail-card dark reveal">
                 <p>INSCRIÇÃO</p>
                 <h3>R$ 250</h3><span>Até 2x de R$ 125 (1ª até 30/09 · 2ª até 05/10) · à vista até 05/10</span>
             </div>
-            <div class="detail-card orange" id="premiacao">
+            <div class="detail-card orange reveal" id="premiacao">
                 <p>PREMIAÇÃO</p>
                 <h3>R$ 2.100</h3><span>R$ 1.500 para o 1º lugar e R$ 600 para o 2º.</span>
             </div>
-            <div class="detail-card light">
+            <div class="detail-card light reveal">
                 <p>NO EVENTO</p>
                 <h3>Vem com fome!</h3><span>Churrasco, arroz, farofa, água, refrigerante, picolé e dindin.</span>
             </div>
         </section>
-        <section class="community-banner"><img src="/assets/logo-iap.png" alt="">
+        <section class="community-banner reveal"><img src="/assets/logo-iap.png" alt="">
             <div>
                 <p class="eyebrow">Mais que um torneio</p>
                 <h2>Quando a comunidade joga junto, todo mundo ganha.</h2>
@@ -91,6 +104,48 @@
             navigation.classList.remove("is-open");
             menuButton?.setAttribute("aria-expanded", "false");
         }));
+
+        const countdown = document.querySelector("#countdown");
+        if (countdown) {
+            const target = new Date(countdown.dataset.target).getTime();
+            const label = countdown.querySelector(".countdown-label");
+            const units = {
+                days: countdown.querySelector("#cd-days"),
+                hours: countdown.querySelector("#cd-hours"),
+                minutes: countdown.querySelector("#cd-minutes"),
+                seconds: countdown.querySelector("#cd-seconds")
+            };
+            const pad = value => String(value).padStart(2, "0");
+            const tick = () => {
+                const diff = target - Date.now();
+                if (diff <= 0) {
+                    label.textContent = "É hoje! ⚽";
+                    Object.values(units).forEach(el => el.textContent = "00");
+                    clearInterval(timer);
+                    return;
+                }
+                units.days.textContent = pad(Math.floor(diff / 86400000));
+                units.hours.textContent = pad(Math.floor(diff % 86400000 / 3600000));
+                units.minutes.textContent = pad(Math.floor(diff % 3600000 / 60000));
+                units.seconds.textContent = pad(Math.floor(diff % 60000 / 1000));
+            };
+            tick();
+            const timer = setInterval(tick, 1000);
+        }
+
+        const revealEls = document.querySelectorAll(".reveal");
+        if ("IntersectionObserver" in window) {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add("is-visible");
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.15 });
+            revealEls.forEach(el => observer.observe(el));
+        } else {
+            revealEls.forEach(el => el.classList.add("is-visible"));
+        }
     </script>
 </body>
 
